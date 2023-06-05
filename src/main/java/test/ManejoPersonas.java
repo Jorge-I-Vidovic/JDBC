@@ -18,7 +18,7 @@ public class ManejoPersonas {
           personaDAO.actualizar(actualizarPersona);*/
 
         //Eliminar una persona
-        Persona eliminarPersona = new Persona(6);
+        //Persona eliminarPersona = new Persona(6);
         //personaDAO.borrar(eliminarPersona);
 
         //Listar personas
