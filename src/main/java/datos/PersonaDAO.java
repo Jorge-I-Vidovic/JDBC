@@ -14,7 +14,9 @@ import static datos.Conexion.*;
 
 public class PersonaDAO {
     private static final String SQL_SELECT = "SELECT * FROM test.persona";
-    private static final String SQL_INSERT = "INSERT INTO test.persona (nombre, apellido, email, telefono) VALUES (?,?.?,?)";
+    private static final String SQL_INSERT = "INSERT INTO test.persona (nombre, apellido, email, telefono) VALUES (?,?,?,?)";
+    private static final String SQL_UPDATE = "UPDATE test.persona SET nombre = ?, apellido = ?, email = ?, telefono = ? WHERE id_persona = ?";
+    private static final String SQL_DELETE = "DELETE FROM test.persona WHERE id_persona = ?";
 
     public List<Persona> seleccionar() {
         Connection con;
@@ -65,6 +67,48 @@ public class PersonaDAO {
             pst.setString(2, persona.getApellido());
             pst.setString(3, persona.getEmail());
             pst.setInt(4, persona.getTlf());
+            registros = pst.executeUpdate();
+
+            close(pst);
+            close(con);
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        }
+        return registros;
+    }
+
+    public int actualizar(Persona persona) {
+        Connection con;
+        PreparedStatement pst;
+        int registros = 0;
+
+        try {
+            con = getConnection();
+            pst = con.prepareStatement(SQL_UPDATE);
+            pst.setString(1, persona.getNombre());
+            pst.setString(2, persona.getApellido());
+            pst.setString(3, persona.getEmail());
+            pst.setInt(4, persona.getTlf());
+            pst.setInt(5, persona.getIdPersona());
+            registros = pst.executeUpdate();
+
+            close(pst);
+            close(con);
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        }
+        return registros;
+    }
+
+    public int borrar(Persona persona) {
+        Connection con;
+        PreparedStatement pst;
+        int registros = 0;
+
+        try {
+            con = getConnection();
+            pst = con.prepareStatement(SQL_DELETE);
+            pst.setInt(1, persona.getIdPersona());
             registros = pst.executeUpdate();
 
             close(pst);
