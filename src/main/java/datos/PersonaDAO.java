@@ -13,10 +13,19 @@ import java.util.List;
 import static datos.Conexion.*;
 
 public class PersonaDAO {
+    private Connection conexionTransaccional;
     private static final String SQL_SELECT = "SELECT * FROM test.persona";
     private static final String SQL_INSERT = "INSERT INTO test.persona (nombre, apellido, email, telefono) VALUES (?,?,?,?)";
     private static final String SQL_UPDATE = "UPDATE test.persona SET nombre = ?, apellido = ?, email = ?, telefono = ? WHERE id_persona = ?";
     private static final String SQL_DELETE = "DELETE FROM test.persona WHERE id_persona = ?";
+
+    public PersonaDAO() {
+
+    }
+
+    public PersonaDAO(Connection conexionTransaccional) {
+        this.conexionTransaccional = conexionTransaccional;
+    }
 
     public List<Persona> seleccionar() {
         Connection con;
@@ -26,7 +35,7 @@ public class PersonaDAO {
         List<Persona> personas = new ArrayList<>();
 
         try {
-            con = getConnection();
+            con = this.conexionTransaccional != null ? this.conexionTransaccional : getConnection();
             pst = con.prepareStatement(SQL_SELECT);
             rs = pst.executeQuery();
 
@@ -47,7 +56,9 @@ public class PersonaDAO {
             }
             close(rs);
             close(pst);
-            close(con);
+            if (this.conexionTransaccional == null) {
+                close(con);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
@@ -61,7 +72,7 @@ public class PersonaDAO {
         int registros = 0;
 
         try {
-            con = getConnection();
+            con = this.conexionTransaccional != null ? this.conexionTransaccional : getConnection();
             pst = con.prepareStatement(SQL_INSERT);
             pst.setString(1, persona.getNombre());
             pst.setString(2, persona.getApellido());
@@ -70,7 +81,9 @@ public class PersonaDAO {
             registros = pst.executeUpdate();
 
             close(pst);
-            close(con);
+            if (this.conexionTransaccional == null) {
+                close(con);
+            }
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         }
@@ -83,7 +96,7 @@ public class PersonaDAO {
         int registros = 0;
 
         try {
-            con = getConnection();
+            con = this.conexionTransaccional != null ? this.conexionTransaccional : getConnection();
             pst = con.prepareStatement(SQL_UPDATE);
             pst.setString(1, persona.getNombre());
             pst.setString(2, persona.getApellido());
@@ -93,7 +106,9 @@ public class PersonaDAO {
             registros = pst.executeUpdate();
 
             close(pst);
-            close(con);
+            if (this.conexionTransaccional == null) {
+                close(con);
+            }
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         }
@@ -106,13 +121,15 @@ public class PersonaDAO {
         int registros = 0;
 
         try {
-            con = getConnection();
+            con = this.conexionTransaccional != null ? this.conexionTransaccional : getConnection();
             pst = con.prepareStatement(SQL_DELETE);
             pst.setInt(1, persona.getIdPersona());
             registros = pst.executeUpdate();
 
             close(pst);
-            close(con);
+            if (this.conexionTransaccional == null) {
+                close(con);
+            }
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         }

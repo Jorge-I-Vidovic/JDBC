@@ -1,13 +1,43 @@
 package test;
 
+import datos.Conexion;
 import datos.PersonaDAO;
 import domain.Persona;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ManejoPersonas {
     public static void main(String[] args) {
-        PersonaDAO personaDAO = new PersonaDAO();
+        //Manejo transaccional
+        Connection conexion = null;
+        try {
+            conexion = Conexion.getConnection();
+            if (conexion.getAutoCommit()) {
+                conexion.setAutoCommit(false);
+            }
+            PersonaDAO personaDAO = new PersonaDAO(conexion);
+            Persona persona = new Persona(2, "Sara E.", "Vidovic", "correo@correo.com", 987654321);
+            personaDAO.actualizar(persona);
+
+            Persona personaNueva = new Persona("Anna G.", "Rodrigues", "correo@correo.com", 159765456);
+            personaDAO.insertar(personaNueva);
+            conexion.commit();
+
+            //Listar personas
+            List<Persona> personas = personaDAO.seleccionar();
+            personas.forEach(System.out::println);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+            System.out.println("Entramos en el rollback");
+            try {
+                conexion.rollback();
+            } catch (SQLException ex1) {
+                ex1.printStackTrace(System.out);
+            }
+        }
+
 
         //Insertando una nueva persona en la BDD
 /*        Persona persona = new Persona("Pepe", "Rodrigues", "correo@correo.com", 112233445);
@@ -22,7 +52,7 @@ public class ManejoPersonas {
         //personaDAO.borrar(eliminarPersona);
 
         //Listar personas
-        List<Persona> personas = personaDAO.seleccionar();
-        personas.forEach(System.out::println);
+        //List<Persona> personas = personaDAO.seleccionar();
+        //personas.forEach(System.out::println);
     }
 }
