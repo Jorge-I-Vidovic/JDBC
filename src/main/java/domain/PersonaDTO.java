@@ -1,27 +1,27 @@
 package domain;
 
-public class Persona {
+public class PersonaDTO {
     private int idPersona;
     private String nombre;
     private String apellido;
     private String email;
     private int tlf;
 
-    public Persona() {
+    public PersonaDTO() {
     }
 
-    public Persona(int idPersona) {
+    public PersonaDTO(int idPersona) {
         this.idPersona = idPersona;
     }
 
-    public Persona(String nombre, String apellido, String email, int tlf) {
+    public PersonaDTO(String nombre, String apellido, String email, int tlf) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.tlf = tlf;
     }
 
-    public Persona(int idPersona, String nombre, String apellido, String email, int tlf) {
+    public PersonaDTO(int idPersona, String nombre, String apellido, String email, int tlf) {
         this.idPersona = idPersona;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -71,7 +71,7 @@ public class Persona {
 
     @Override
     public String toString() {
-        return "Persona{" +
+        return "PersonaDTO{" +
                 "idPersona=" + idPersona +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +

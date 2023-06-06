@@ -1,6 +1,6 @@
 package datos;
 
-import domain.Persona;
+import domain.PersonaDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static datos.Conexion.*;
 
-public class PersonaDAO {
+public class PersonaDAO implements Persona_Interface {
     private Connection conexionTransaccional;
     private static final String SQL_SELECT = "SELECT * FROM test.persona";
     private static final String SQL_INSERT = "INSERT INTO test.persona (nombre, apellido, email, telefono) VALUES (?,?,?,?)";
@@ -20,19 +20,18 @@ public class PersonaDAO {
     private static final String SQL_DELETE = "DELETE FROM test.persona WHERE id_persona = ?";
 
     public PersonaDAO() {
-
     }
 
     public PersonaDAO(Connection conexionTransaccional) {
         this.conexionTransaccional = conexionTransaccional;
     }
 
-    public List<Persona> seleccionar() {
+    public List<PersonaDTO> seleccionar() {
         Connection con;
         PreparedStatement pst;
         ResultSet rs;
-        Persona persona;
-        List<Persona> personas = new ArrayList<>();
+        PersonaDTO personaDTO;
+        List<PersonaDTO> personaDTOS = new ArrayList<>();
 
         try {
             con = this.conexionTransaccional != null ? this.conexionTransaccional : getConnection();
@@ -51,8 +50,8 @@ public class PersonaDAO {
                 apellido = rs.getString("apellido");
                 email = rs.getString("email");
                 tlf = rs.getInt("telefono");
-                persona = new Persona(idPersona, nombre, apellido, email, tlf);
-                personas.add(persona);
+                personaDTO = new PersonaDTO(idPersona, nombre, apellido, email, tlf);
+                personaDTOS.add(personaDTO);
             }
             close(rs);
             close(pst);
@@ -62,11 +61,11 @@ public class PersonaDAO {
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
-        return personas;
+        return personaDTOS;
     }
 
 
-    public int insertar(Persona persona) {
+    public int insertar(PersonaDTO personaDTO) {
         Connection con;
         PreparedStatement pst;
         int registros = 0;
@@ -74,10 +73,10 @@ public class PersonaDAO {
         try {
             con = this.conexionTransaccional != null ? this.conexionTransaccional : getConnection();
             pst = con.prepareStatement(SQL_INSERT);
-            pst.setString(1, persona.getNombre());
-            pst.setString(2, persona.getApellido());
-            pst.setString(3, persona.getEmail());
-            pst.setInt(4, persona.getTlf());
+            pst.setString(1, personaDTO.getNombre());
+            pst.setString(2, personaDTO.getApellido());
+            pst.setString(3, personaDTO.getEmail());
+            pst.setInt(4, personaDTO.getTlf());
             registros = pst.executeUpdate();
 
             close(pst);
@@ -90,7 +89,7 @@ public class PersonaDAO {
         return registros;
     }
 
-    public int actualizar(Persona persona) {
+    public int actualizar(PersonaDTO personaDTO) {
         Connection con;
         PreparedStatement pst;
         int registros = 0;
@@ -98,11 +97,11 @@ public class PersonaDAO {
         try {
             con = this.conexionTransaccional != null ? this.conexionTransaccional : getConnection();
             pst = con.prepareStatement(SQL_UPDATE);
-            pst.setString(1, persona.getNombre());
-            pst.setString(2, persona.getApellido());
-            pst.setString(3, persona.getEmail());
-            pst.setInt(4, persona.getTlf());
-            pst.setInt(5, persona.getIdPersona());
+            pst.setString(1, personaDTO.getNombre());
+            pst.setString(2, personaDTO.getApellido());
+            pst.setString(3, personaDTO.getEmail());
+            pst.setInt(4, personaDTO.getTlf());
+            pst.setInt(5, personaDTO.getIdPersona());
             registros = pst.executeUpdate();
 
             close(pst);
@@ -115,7 +114,7 @@ public class PersonaDAO {
         return registros;
     }
 
-    public int borrar(Persona persona) {
+    public int borrar(PersonaDTO personaDTO) {
         Connection con;
         PreparedStatement pst;
         int registros = 0;
@@ -123,7 +122,7 @@ public class PersonaDAO {
         try {
             con = this.conexionTransaccional != null ? this.conexionTransaccional : getConnection();
             pst = con.prepareStatement(SQL_DELETE);
-            pst.setInt(1, persona.getIdPersona());
+            pst.setInt(1, personaDTO.getIdPersona());
             registros = pst.executeUpdate();
 
             close(pst);

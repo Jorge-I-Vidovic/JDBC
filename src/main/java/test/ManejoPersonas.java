@@ -2,7 +2,8 @@ package test;
 
 import datos.Conexion;
 import datos.PersonaDAO;
-import domain.Persona;
+import datos.Persona_Interface;
+import domain.PersonaDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,17 +18,12 @@ public class ManejoPersonas {
             if (conexion.getAutoCommit()) {
                 conexion.setAutoCommit(false);
             }
-            PersonaDAO personaDAO = new PersonaDAO(conexion);
-            Persona persona = new Persona(2, "Sara E.", "Vidovic", "correo@correo.com", 987654321);
-            personaDAO.actualizar(persona);
+            Persona_Interface personaDAO = new PersonaDAO(conexion);
+            List<PersonaDTO> personas = personaDAO.seleccionar();
+            for (PersonaDTO persona:personas){
+                System.out.println(persona);
+            }
 
-            Persona personaNueva = new Persona("Anna G.", "Rodrigues", "correo@correo.com", 159765456);
-            personaDAO.insertar(personaNueva);
-            conexion.commit();
-
-            //Listar personas
-            List<Persona> personas = personaDAO.seleccionar();
-            personas.forEach(System.out::println);
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
             System.out.println("Entramos en el rollback");
@@ -37,22 +33,5 @@ public class ManejoPersonas {
                 ex1.printStackTrace(System.out);
             }
         }
-
-
-        //Insertando una nueva persona en la BDD
-/*        Persona persona = new Persona("Pepe", "Rodrigues", "correo@correo.com", 112233445);
-        personaDAO.insertar(persona);*/
-
-        //Modificar una persona existente
-/*        Persona actualizarPersona = new Persona(1,"Jorge I.", "Vidovic", "correo@correo.com",123456789);
-          personaDAO.actualizar(actualizarPersona);*/
-
-        //Eliminar una persona
-        //Persona eliminarPersona = new Persona(6);
-        //personaDAO.borrar(eliminarPersona);
-
-        //Listar personas
-        //List<Persona> personas = personaDAO.seleccionar();
-        //personas.forEach(System.out::println);
     }
 }
